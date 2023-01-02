@@ -1,17 +1,22 @@
+import React from "react";
 import config from "../config.json"
 import styled from "styled-components"
 import { CSSReset } from "../src/components/CSSReset";
 import { StyledTimeline } from "../src/components/Timeline";
 import Menu from "../src/components/Menu";
+import { StyledFavoriteUsers } from "../src/components/FavoriteUsers";
 
 function HomePage() {
+    const [filterValue, setfilterValue] = React.useState("");
+
     return (
         <>
             <CSSReset />
             <div>
-                <Menu />
+                <Menu filterValue={filterValue} setfilterValue={setfilterValue} />
                 <Header />
-                <Timeline playlists={config.playlists} />
+                <Timeline searchValue={filterValue} playlists={config.playlists} />
+                <FavoriteUsers />
             </div>
         </>
     )
@@ -64,7 +69,7 @@ function Header() {
     )
 }
 
-function Timeline(props) {
+function Timeline({ searchValue, ...props }) {
     const playlistsNames = Object.keys(props.playlists)
 
     return (
@@ -73,23 +78,47 @@ function Timeline(props) {
                 const videos = props.playlists[playlistsName]
 
                 return (
-                    <section>
+                    <section key={playlistsName}>
                         <h2>{playlistsName}</h2>
                         <div>
                             {
-                                videos.map((video) => {
-                                    return (
-                                        <a href={video.url}>
-                                            <img src={video.thumb} />
-                                            <span>{video.title}</span>
-                                        </a>
-                                    )
+                                videos.filter((video) => {
+                                    const titleNormalized = video.title.toLowerCase()
+                                    const searchValueNormalized = searchValue.toLowerCase()
+
+                                    return titleNormalized.includes(searchValueNormalized)
                                 })
+                                    .map((video) => {
+                                        return (
+                                            <a key={video.url} href={video.url}>
+                                                <img src={video.thumb} />
+                                                <span>{video.title}</span>
+                                            </a>
+                                        )
+                                    })
                             }
                         </div>
                     </section>
                 )
             })}
         </StyledTimeline>
+    )
+}
+
+function FavoriteUsers() {
+    return (
+        <>
+            <h2 style={{ paddingLeft: '32px', fontSize: '16px', marginBottom: '16px' }}>AluraTubes Favoritos</h2>
+            <StyledFavoriteUsers>
+                {config.favoriteUsers.map((user) => {
+                    return (
+                        <div className="user-info" key={user.github}>
+                            <img src={`https://github.com/${user.github}.png`} />
+                            <span>@{user.github}</span>
+                        </div>
+                    )
+                })}
+            </StyledFavoriteUsers>
+        </>
     )
 }
