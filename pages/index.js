@@ -20,10 +20,20 @@ function HomePage() {
 export default HomePage
 
 const StyledHeader = styled.div`
-    img {
-        width: 80px;
-        height: 80px;
-        border-radius: 40px;
+    .banner {
+        width: 100%;
+        height: 250px;
+        overflow: hidden;
+    }
+
+    .banner img {
+        width: 100%;
+    }
+
+    section img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
     }
 
     .user-info {
@@ -32,13 +42,17 @@ const StyledHeader = styled.div`
         width: 100%;
         padding: 16px 32px;
         gap: 16px;
-        margin-top: 70px;
+        margin-top: 20px;
     }
 `;
 
 function Header() {
     return (
         <StyledHeader>
+            <div className="banner">
+                <img src="https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=1200" />
+            </div>
+
             <section className="user-info">
                 <img src={`https://github.com/${config.github}.png`} />
                 <div>
